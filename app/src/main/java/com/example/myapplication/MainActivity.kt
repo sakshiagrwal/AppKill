@@ -1,26 +1,30 @@
 package com.example.myapplication
 
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var appListRecyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Call findViewById to get a reference to appListRecyclerView
         appListRecyclerView = findViewById(R.id.appListRecyclerView)
+        appListRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Call the setupAppList function to display the list of installed apps
         setupAppList()
     }
 
-    // Define the getInstalledApps function to retrieve a list of installed apps
+    private fun setupAppList() {
+        val appList = getInstalledApps()
+        val adapter = AppListAdapter(appList)
+        appListRecyclerView.adapter = adapter
+    }
+
     private fun getInstalledApps(): List<AppInfo> {
         val pm = packageManager
         val apps = pm.getInstalledApplications(PackageManager.GET_META_DATA)
@@ -36,12 +40,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return appList
-    }
-
-    // Define the setupAppList function to display the list of installed apps in the RecyclerView
-    private fun setupAppList() {
-        val appList = getInstalledApps()
-        val adapter = AppListAdapter(appList)
-        appListRecyclerView.adapter = adapter
     }
 }
