@@ -1,13 +1,17 @@
 package com.example.myapplication
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
     private lateinit var appListRecyclerView: RecyclerView
+    private lateinit var stopSelectedAppsButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,6 +19,11 @@ class MainActivity : AppCompatActivity() {
 
         appListRecyclerView = findViewById(R.id.appListRecyclerView)
         appListRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        stopSelectedAppsButton = findViewById(R.id.stopSelectedAppsButton)
+        stopSelectedAppsButton.setOnClickListener {
+            stopSelectedApps()
+        }
 
         setupAppList()
     }
@@ -40,5 +49,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return appList
+    }
+
+    private fun stopSelectedApps() {
+        val adapter = appListRecyclerView.adapter as AppListAdapter
+        val selectedApps = adapter.getSelectedApps()
+        for (appInfo in selectedApps) {
+            val packageName = appInfo.packageName
+            val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            activityManager.killBackgroundProcesses(packageName)
+        }
+        adapter.notifyDataSetChanged()
     }
 }

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="app_name_list">App name</string>
+    <string name="stop_selected_apps">Stop Selected Apps</string>
 </resources>
